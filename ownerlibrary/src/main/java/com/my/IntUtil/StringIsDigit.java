@@ -14,10 +14,7 @@ public class StringIsDigit {
             return false;
         }
         String strNum=String.valueOf(object);
-        if (strNum==null){
-            return false;
-        }
-        Pattern pattern = Pattern.compile("[0-9]{1,}");
+        Pattern pattern = Pattern.compile("^[1-9]\\d*$");
         Matcher matcher = pattern.matcher((CharSequence) strNum);
         return matcher.matches();
     }
