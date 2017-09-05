@@ -6,6 +6,10 @@ import android.net.wifi.WifiManager;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,8 +32,8 @@ public class WifiMsg {
         for (int i = 0; i < meths.length; i++) {
             meths[i].getParameterTypes();
             if (meths[i].getParameterTypes().length == 0) {
-                builder.append("" + meths[i].getName() + ": " + meths[i].invoke(info, new String[]{}) + "\n");
-                map.put(meths[i].getName(),meths[i].invoke(info, new String[]{}));
+                builder.append("" + meths[i].getName() + ": " + meths[i].invoke(info, new Object[]{}) + "\n");
+                map.put(meths[i].getName(),meths[i].invoke(info, new Object[]{}));
             }
         }
         int i = info.getIpAddress();
@@ -38,6 +42,25 @@ public class WifiMsg {
         builder.append("getIpAddress:" + ip).toString();
         map.put("AllWifiInfo",builder.toString());
         return map;
+    }
+
+    //获取4G网IP
+    public static String getPhoneIp() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                        // if (!inetAddress.isLoopbackAddress() && inetAddress
+                        // instanceof Inet6Address) {
+                        return inetAddress.getHostAddress().toString();
+                    }
+                }//10.147.57.69\10.142.158.223
+            }
+        } catch (Exception e) {
+        }
+        return "";
     }
 
 }
